@@ -2,17 +2,14 @@ import json
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from db import setup_db
-# from flask_uploads import UploadSet, configure_uploads, ALL
 
 
 
 app = Flask(__name__)
 CORS(app)
 db = setup_db()
+app.config['UPLOAD_FOLDER'] = '.\pifuhd\sample_images'
 
-# files = UploadSet('files', ALL)
-# app.config['UPLOADED_FILES_DEST'] = 'uploads'  # This is where the uploaded files will be stored
-# configure_uploads(app, files)
 
 
 @app.route('/home')
