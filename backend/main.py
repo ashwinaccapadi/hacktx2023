@@ -14,6 +14,7 @@ app.config['UPLOAD_FOLDER'] = '.\pifuhd\sample_images'
 
 @app.route('/home')
 def home():
+    #hdhdh
     users = db['Users']
     data = users.find({"username" : "AV912"})
     documents = []
