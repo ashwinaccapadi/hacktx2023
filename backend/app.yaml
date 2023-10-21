@@ -1,0 +1,8 @@
+#app.yaml
+runtime: python38
+
+env_variables:
+  MONGO_DB_USERNAME: 'osgroup'
+  MONGO_DB_PASSWORD: 'ossucks'
+
+
