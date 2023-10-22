@@ -42,16 +42,23 @@ export default function SignUp() {
   
     try {
       // Send a POST request to your Flask backend for registration
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'http://127.0.0.1:5000/signup?' + "username:",
-        headers: { }
+      const url = 'http://127.0.0.1:5000/signup';
+      const data = {
+        username: username,
+        password: password,
+        first_name: first_name,
+        last_name: last_name
       };
-      const response = await axios.request(config);
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+      const response = await axios.post(url, data, config);
       
       // Check the response from the server
-      if (response.data.message === 'Registration successful') {
+      if (response.data === 'Registration Successful') {
         // Registration successful, you can redirect or perform other actions here
         console.log('Registration successful');
       } else {

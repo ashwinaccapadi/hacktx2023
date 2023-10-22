@@ -1,14 +1,12 @@
 import json
 from flask import Flask, jsonify, request, redirect, session
-from flask_session import Session
 from flask_cors import CORS
 from db import setup_db
-from passlib.hash import argon2
 
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}) 
+CORS(app) 
 
 db = setup_db()
 users = db['Users']
@@ -72,11 +70,17 @@ def register():
         'first_name': first_name,
         'last_name': last_name
     }
-
-    if users.find({'username': username}).count() > 0:
-        return jsonify({'message': 'User already exists'}), 400
+    data = users.find({'username': username})
+    documents = []
+    for document in data:
+        document.pop('_id', None)
+        documents.append(document)
+    data.close()
+    json_data = json.dumps(documents)
+    if len(documents) > 0:
+        return "Registration Failed"
     users.insert_one(user)
-    return jsonify({'message': 'User created successfully'}), 200
+    return "Registration Successful"
     
 
 
