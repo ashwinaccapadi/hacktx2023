@@ -21,7 +21,7 @@ function Copyright() {
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        crAIgslist
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -34,9 +34,9 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function HomePage() {
+export default function Browse() {
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <div>
       <CssBaseline />
       <AppBar position="relative">
         <Toolbar>
@@ -132,6 +132,6 @@ export default function HomePage() {
         <Copyright />
       </Box>
       {/* End footer */}
-    </ThemeProvider>
+    </div>
   );
 }

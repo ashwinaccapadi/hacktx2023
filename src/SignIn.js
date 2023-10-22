@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from "react-router-dom";
-
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -32,14 +32,29 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
+        const username = data.get('username');
+        const password = data.get('password');
+      
+        try {
+          // Send a POST request to your Flask backend for login
+          const response = await axios.post('/', { username, password });
+      
+          // Check the response from the server
+          if (response.data.message === 'Login successful') {
+            // Authentication successful, you can redirect or perform other actions here
+            console.log('Login successful');
+          } else {
+            // Handle authentication failure
+            console.error('Login failed');
+          }
+        } catch (error) {
+          // Handle request or server errors
+          console.error('Error:', error);
+        }
+      };
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -59,15 +74,15 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" method="POST" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
+                            id="username"
+                            label="Username"
+                            name="username"
+                            autoComplete="username"
                             autoFocus
                         />
                         <TextField

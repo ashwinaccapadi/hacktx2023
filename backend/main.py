@@ -1,21 +1,23 @@
 import json
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect, session
+from flask_session import Session
 from flask_cors import CORS
 from db import setup_db
+from passlib.hash import argon2
 
 
 
 app = Flask(__name__)
-CORS(app)
-db = setup_db()
-app.config['UPLOAD_FOLDER'] = '.\pifuhd\sample_images'
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}) 
 
+db = setup_db()
+users = db['Users']
+models = db['Models']
+app.config['UPLOAD_FOLDER'] = '.\pifuhd\sample_images'
 
 
 @app.route('/home')
 def home():
-    #hdhdh
-    users = db['Users']
     data = users.find({"username" : "AV912"})
     documents = []
     for document in data:
@@ -27,9 +29,7 @@ def home():
     return(json_data)
    
 
-@app.route('/login')
-def login():
-   return 0
+
 
 # @app.route('/upload', methods=['POST'])
 # def upload_file():
@@ -55,6 +55,52 @@ def login():
 #     # In this example, I'm just returning the filename and metadata.
 #     # In a real scenario, you may want to store this information in your database.
 #     return jsonify({"filename": filename, "metadata": metadata})
+
+
+@app.route('/signup', methods=['POST'])
+def register():
+    register_data = request.get_json()
+    username = register_data['username']
+    password = register_data['password']
+    #password = argon2.hash(password)
+    first_name = register_data['first_name']
+    last_name = register_data['last_name']
+
+    user = {
+        'username': username,
+        'password': password,
+        'first_name': first_name,
+        'last_name': last_name
+    }
+
+    if users.find({'username': username}).count() > 0:
+        return jsonify({'message': 'User already exists'}), 400
+    users.insert_one(user)
+    return jsonify({'message': 'User created successfully'}), 200
+    
+
+
+#login page that will redirect to user's home page if login is successful
+@app.route('/', methods=['POST'])
+def login():
+    login_data = request.get_json()
+    username = login_data['username']
+    password = login_data['password']
+    password = argon2.hash(password)
+    user = users.find_one({'username': username, 'password': password})
+    if user:
+        session['username'] = username
+        return redirect('/home')
+    else:
+        return jsonify({'message': 'Invalid credentials'}), 401
+    
+"""@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')  # Replace with your React app's origin
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response"""
 
 
 if __name__ == '__main__':

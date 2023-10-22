@@ -1,10 +1,9 @@
 import * as React from 'react';
+import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { Link } from "react-router-dom";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -31,14 +30,40 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const first_name = data.get('firstName');
+    const last_name = data.get('lastName');
+    const username = data.get('username');
+    const password = data.get('password');
+  
+    try {
+      // Send a POST request to your Flask backend for registration
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'http://127.0.0.1:5000/signup?' + "username:",
+        headers: { }
+      };
+      const response = await axios.request(config);
+      
+      // Check the response from the server
+      if (response.data.message === 'Registration successful') {
+        // Registration successful, you can redirect or perform other actions here
+        console.log('Registration successful');
+      } else {
+        // Handle registration failure
+        console.error('Registration failed');
+      }
+    } catch (error) {
+      // Handle request or server errors
+      console.error('Error:', error);
+    }
   };
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -58,7 +83,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" method="POST" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -85,10 +110,10 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -103,10 +128,6 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive promotions and updates via email."
-                />
               </Grid>
             </Grid>
             <Button
