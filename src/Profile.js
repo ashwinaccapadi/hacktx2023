@@ -19,13 +19,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import BasicMenu from './BasicMenu';
+import ModelDragForm from './ModelDragForm';
+import AccountBalance from './AccountBalance';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        crAIgslist
+      <Link color="inherit">
+        AIgon Alley
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -56,6 +58,32 @@ export default function Profile() {
     fetchData();
   }, [username]);
 
+  //const [balance, setBalance] = useState(null);
+  //const [loadingBalance, setLoadingBalance] = useState(true);
+  //const [error, setError] = useState(null);
+
+  //const account_id = userData.user.bank_account_id;
+  //const api_key = '6814f91cb9090942d48d91b63caa8f9c';
+  //const url = `http://api.nessieisreal.com/accounts/${account_id}?key=${api_key}`;
+
+  // useEffect(() => {
+  //   axios.get(url, { headers: { "Accept": "application/json" } })
+  //     .then(response => {
+  //       setBalance(response.data.balance);
+  //       setLoadingBalance(false);
+  //     })
+  //     .catch(error => {
+  //       setError(error.toString());
+  //       setLoadingBalance(false);
+  //     });
+  // }, []);  // The empty array as a second argument ensures this useEffect runs once, similar to componentDidMount()
+
+  //if (loadingBalance) return <div>Loading...</div>;
+  //if (error) return <div>Error: {error}</div>;
+
+
+
+
   if (loading) {
     return <div>Loading</div>
   }
@@ -80,6 +108,9 @@ export default function Profile() {
         >
       <BasicMenu/>
       </Box>
+      {/* <div>
+      Account Balance: ${balance}
+      </div> */}
       <main>
         {/* Hero unit */}
         <Box
@@ -87,7 +118,10 @@ export default function Profile() {
             bgcolor: 'background.paper',
             pt: 8,
             pb: 6,
+            align: 'center'
           }}
+          justifyContent={'center'}
+          alignItems="center"
         >
           <Container maxWidth="sm">
             <Typography
@@ -99,6 +133,9 @@ export default function Profile() {
             >
               {userData ? userData.user.first_name : 'Loading'}
             </Typography>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '30px'}}>
+              <AccountBalance AccountId={userData.user.bank_account_id}></AccountBalance>
+            </div>
             <Typography variant="h4" align="center" color="text.secondary" paragraph>
               Look at all your models!
             </Typography>
@@ -108,9 +145,7 @@ export default function Profile() {
               spacing={2}
               justifyContent="center"
             >
-              <Button variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-
+            <ModelDragForm/>
             </Stack>
           </Container>
         </Box>
@@ -141,7 +176,6 @@ export default function Profile() {
                   <CardActions>
                     <Button size="small">{card.price}</Button>
                     <Button size="small">{card.link}</Button>
-                    
                   </CardActions>
                 </Card>
               </Grid>

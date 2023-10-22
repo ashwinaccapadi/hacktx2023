@@ -18,14 +18,15 @@ import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import BasicMenu from './BasicMenu';
+import { useNavigate } from 'react-router-dom';
 
 
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        crAIgslist
+      <Link color="inherit">
+        AIgon Alley
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -39,6 +40,8 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const defaultTheme = createTheme();
 
 export default function Browse() {
+
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -55,6 +58,10 @@ export default function Browse() {
     };
     fetchData();
   }, []);
+
+  const handleClick = (id) => {
+    navigate('/run/' + id);
+  };
 
   if (loading) {
     return <div>Loading</div>;
@@ -105,8 +112,7 @@ export default function Browse() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">View More</Button>
-                    <Button size="small">Buy Now</Button>
+                    <Button size="small" onClick={() => handleClick(card._id)}> View More </Button>
                   </CardActions>
                 </Card>
               </Grid>

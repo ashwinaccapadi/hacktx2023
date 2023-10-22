@@ -18,8 +18,8 @@ function Copyright(props) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                crAIgslist
+            <Link color="inherit">
+                AIgon Alley
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -80,12 +80,13 @@ export default function SignIn() {
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
+                        marginTop: 20,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
                     }}
                 >
+                    <Typography variant="h4" component="h2">Welcome to AIagon Alley</Typography>
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
                     </Avatar>

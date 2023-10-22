@@ -17,8 +17,8 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        crAIgslist
+      <Link color="inherit">
+        AIgon Alley
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -32,32 +32,32 @@ const defaultTheme = createTheme();
 
 export default function SignUp() {
   const navigate = useNavigate();
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const bank_account_id = data.get('bank_account_id');
     const first_name = data.get('firstName');
     const last_name = data.get('lastName');
     const username = data.get('username');
     const password = data.get('password');
 
     window.myGlobalVar = username;
-  
     try {
       // Send a POST request to your Flask backend for registration
       const url = 'http://34.42.69.196:5000/signup';
-      const data = {
-        username: username,
-        password: password,
-        first_name: first_name,
-        last_name: last_name
-      };
-
+      const data = new FormData();
+      data.append('username', username);
+      data.append('password', password);
+      data.append('first_name', first_name);
+      data.append('last_name', last_name);
+      data.append('bank_account_id', bank_account_id);
       const config = {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'multipart/form-data',
         }
       };
+      console.log(data);
       const response = await axios.post(url, data, config);
       
       // Check the response from the server
@@ -82,7 +82,7 @@ export default function SignUp() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 20,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -96,6 +96,15 @@ export default function SignUp() {
           </Typography>
           <Box component="form" method="POST" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+            {<Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="bank_account_id"
+                  label="bank_account_id"
+                  id="bank_account_id"
+                />
+              </Grid>}
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
