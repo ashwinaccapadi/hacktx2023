@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import CameraIcon from '@mui/icons-material/PhotoCamera';
@@ -15,6 +16,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -29,12 +32,32 @@ function Copyright() {
   );
 }
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Profile() {
+  const { username } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const url = `http://127.0.0.1:5000/profile/${username}`;
+        const response = await axios.get(url);
+        setUserData(response.data); // Assuming response.data is the user data
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, [username]);
+
+  if (loading) {
+    return <div>"Loading"</div>
+  }
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -42,7 +65,7 @@ export default function Profile() {
         <Toolbar>
           <CameraIcon sx={{ mr: 2 }} />
           <Typography variant="h6" color="inherit" noWrap>
-            Album layout
+            {userData ? userData.user.username : 'Loading'}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -63,12 +86,10 @@ export default function Profile() {
               color="text.primary"
               gutterBottom
             >
-              Album layout
+              {userData ? userData.user.first_name : 'Loading'}
             </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Something short and leading about the collection below—its contents,
-              the creator, etc. Make it short and sweet, but not too short so folks
-              don&apos;t simply skip over it entirely.
+            <Typography variant="h4" align="center" color="text.secondary" paragraph>
+              Look at all your models!
             </Typography>
             <Stack
               sx={{ pt: 4 }}
@@ -84,7 +105,7 @@ export default function Profile() {
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
+            {userData.models.map((card) => (
               <Grid item key={card} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -99,16 +120,15 @@ export default function Profile() {
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                        {card.title}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
+                      {card.description}
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <Button size="small">{card.price}</Button>
+                    <Button size="small">{card.link}</Button>
                   </CardActions>
                 </Card>
               </Grid>
@@ -116,22 +136,6 @@ export default function Profile() {
           </Grid>
         </Container>
       </main>
-      {/* Footer */}
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
     </ThemeProvider>
   );
 }

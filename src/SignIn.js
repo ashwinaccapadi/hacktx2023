@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -32,6 +32,9 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+
+    const navigate = useNavigate();
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -39,22 +42,34 @@ export default function SignIn() {
         const password = data.get('password');
       
         try {
-          // Send a POST request to your Flask backend for login
-          const response = await axios.post('/', { username, password });
-      
-          // Check the response from the server
-          if (response.data.message === 'Login successful') {
-            // Authentication successful, you can redirect or perform other actions here
-            console.log('Login successful');
-          } else {
-            // Handle authentication failure
-            console.error('Login failed');
-          }
+            // Send a POST request to your Flask backend for registration
+            const url = 'http://127.0.0.1:5000/';
+            const data = {
+            username: username,
+            password: password
+            };
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            const response = await axios.post(url, data, config);
+
+              
+            // Check the response from the server
+            if (response.data.message === 'Login Successful') {
+                // Authentication successful, you can redirect or perform other actions here
+                console.log('Login successful');
+                navigate('/profile/' + response.data.username );
+            } else {
+                // Handle authentication failure
+                console.error('Login failed');
+            }
         } catch (error) {
           // Handle request or server errors
           console.error('Error:', error);
         }
-      };
+    };
 
     return (
         <ThemeProvider theme={defaultTheme}>

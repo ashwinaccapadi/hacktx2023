@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import CameraIcon from '@mui/icons-material/PhotoCamera';
@@ -15,7 +16,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { useState, useEffect } from 'react';
 function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" align="center">
@@ -35,6 +36,20 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const defaultTheme = createTheme();
 
 export default function Browse() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const url = `http://127.0.0.1:5000/browse`;
+        const response = await axios.get(url);
+        setData(response.data);
+      } catch (error) {
+        // Handle request or server errors
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <CssBaseline />

@@ -2,6 +2,8 @@ import json
 from flask import Flask, jsonify, request, redirect, session
 from flask_cors import CORS
 from db import setup_db
+from passlib.hash import argon2
+
 
 
 
@@ -10,6 +12,7 @@ CORS(app)
 
 db = setup_db()
 users = db['Users']
+users.create_index('username', unique=True)
 models = db['Models']
 app.config['UPLOAD_FOLDER'] = '.\pifuhd\sample_images'
 
@@ -60,7 +63,6 @@ def register():
     register_data = request.get_json()
     username = register_data['username']
     password = register_data['password']
-    #password = argon2.hash(password)
     first_name = register_data['first_name']
     last_name = register_data['last_name']
 
@@ -78,9 +80,9 @@ def register():
     data.close()
     json_data = json.dumps(documents)
     if len(documents) > 0:
-        return "Registration Failed"
+        return jsonify({"message": "Username already exists"})
     users.insert_one(user)
-    return "Registration Successful"
+    return jsonify({"message": "User created successfully."})
     
 
 
@@ -90,13 +92,11 @@ def login():
     login_data = request.get_json()
     username = login_data['username']
     password = login_data['password']
-    password = argon2.hash(password)
     user = users.find_one({'username': username, 'password': password})
     if user:
-        session['username'] = username
-        return redirect('/home')
+        return jsonify({"message": "Login Successful", "username" : username})
     else:
-        return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({"message": "Login Failed"})
     
 """@app.after_request
 def after_request(response):
@@ -106,6 +106,27 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response"""
 
+#user's home page that will display user's information
+@app.route('/profile/<username>', methods=['GET'])
+def profile(username):
+    user = users.find_one({'username': username})
+    user_models = models.find({'username': username})
+    user.pop('_id', None)
+    user.pop('password', None)
+    documents = []
+    if user_models:
+        for document in user_models:
+            document.pop('_id', None)
+            documents.append(document)
+        user_models.close()
+    
+    #return user's information and models
+    if user:
+        return jsonify({"message": "User found", "user": user, "models": documents})
+    else:
+        return jsonify({"message": "User not found"})
+    
+   
 
 if __name__ == '__main__':
    app.run(debug=True)
