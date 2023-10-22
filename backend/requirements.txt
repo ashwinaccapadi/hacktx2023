@@ -2,9 +2,9 @@ Flask==2.2.5
 Flask-CORS==3.0.10
 pymongo==4.5.0
 certifi==2023.7.22
-uuid==1.30
 passlib==1.7.4
 flask-session==0.4.1
+
 
 
 

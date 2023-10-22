@@ -7,6 +7,7 @@ from passlib.hash import argon2
 
 
 
+
 app = Flask(__name__)
 CORS(app) 
 
@@ -111,12 +112,12 @@ def after_request(response):
 def profile(username):
     user = users.find_one({'username': username})
     user_models = models.find({'username': username})
-    user.pop('_id', None)
+    user['_id'] = str(user['_id'])
     user.pop('password', None)
     documents = []
     if user_models:
         for document in user_models:
-            document.pop('_id', None)
+            document['_id'] = str(document['_id'])
             documents.append(document)
         user_models.close()
     
@@ -126,7 +127,15 @@ def profile(username):
     else:
         return jsonify({"message": "User not found"})
     
-   
+@app.route('/browse', methods=['GET'])   
+def browse():
+    all_models = models.find({})
+    documents = []
+    for document in all_models:
+        document.pop('_id', None)
+        documents.append(document)
+    all_models.close()
+    return jsonify({"message": "All models", "models": documents})
 
 if __name__ == '__main__':
    app.run(debug=True)
