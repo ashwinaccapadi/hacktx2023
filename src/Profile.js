@@ -18,6 +18,7 @@ import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import BasicMenu from './BasicMenu';
 
 function Copyright() {
   return (
@@ -43,7 +44,7 @@ export default function Profile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = `http://127.0.0.1:5000/profile/${username}`;
+        const url = `http://34.42.69.196:5000/profile/${username}`;
         const response = await axios.get(url);
         setUserData(response.data); // Assuming response.data is the user data
         
@@ -56,12 +57,14 @@ export default function Profile() {
   }, [username]);
 
   if (loading) {
-    return <div>"Loading"</div>
+    return <div>Loading</div>
   }
   return (
+    
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <AppBar position="relative">
+
         <Toolbar>
           <CameraIcon sx={{ mr: 2 }} />
           <Typography variant="h6" color="inherit" noWrap>
@@ -69,6 +72,14 @@ export default function Profile() {
           </Typography>
         </Toolbar>
       </AppBar>
+      <Box
+          sx={{
+            bgcolor: 'background.paper',
+            pt: 1
+          }}
+        >
+      <BasicMenu/>
+      </Box>
       <main>
         {/* Hero unit */}
         <Box
@@ -99,6 +110,7 @@ export default function Profile() {
             >
               <Button variant="contained">Main call to action</Button>
               <Button variant="outlined">Secondary action</Button>
+
             </Stack>
           </Container>
         </Box>
@@ -129,6 +141,7 @@ export default function Profile() {
                   <CardActions>
                     <Button size="small">{card.price}</Button>
                     <Button size="small">{card.link}</Button>
+                    
                   </CardActions>
                 </Card>
               </Grid>
@@ -136,6 +149,10 @@ export default function Profile() {
           </Grid>
         </Container>
       </main>
+      {/* Footer */}
+      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
+        <Copyright />
+      </Box>
     </ThemeProvider>
   );
 }

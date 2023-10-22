@@ -6,7 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
-axios.defaults.baseURL = 'http://127.0.0.1:5000'; // Replace with your Flask server URL
+axios.defaults.baseURL = 'http://34.42.69.196:5000'; // Replace with your Flask server URL
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

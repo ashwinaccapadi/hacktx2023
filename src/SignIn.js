@@ -40,10 +40,13 @@ export default function SignIn() {
         const data = new FormData(event.currentTarget);
         const username = data.get('username');
         const password = data.get('password');
+
+        window.myGlobalVar = username;
+
       
         try {
             // Send a POST request to your Flask backend for registration
-            const url = 'http://127.0.0.1:5000/';
+            const url = 'http://34.42.69.196:5000/';
             const data = {
             username: username,
             password: password

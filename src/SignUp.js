@@ -40,10 +40,12 @@ export default function SignUp() {
     const last_name = data.get('lastName');
     const username = data.get('username');
     const password = data.get('password');
+
+    window.myGlobalVar = username;
   
     try {
       // Send a POST request to your Flask backend for registration
-      const url = 'http://127.0.0.1:5000/signup';
+      const url = 'http://34.42.69.196:5000/signup';
       const data = {
         username: username,
         password: password,
@@ -62,7 +64,7 @@ export default function SignUp() {
       if (response.data.message === 'User created successfully.') {
         // Registration successful, you can redirect or perform other actions here
         console.log('Registration successful');
-        navigate('/profile/' + response.data.username );
+        navigate('/');
       } else {
         // Handle registration failure
         console.error('Registration failed');
